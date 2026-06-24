@@ -1,0 +1,1 @@
+# Inisialisasi modul core untuk Smart AI Clipper
