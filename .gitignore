@@ -1,38 +1,27 @@
-# ====================================================================
-# SMART AI CLIPPER - GITHUB IGNORE RULES
-# ====================================================================
+# === KRUSIAL: KREDENSIAL DAN KUNCI RAHASIA ===
+*.json
+token.json
+.env
+*.secrets
 
-# 1. Python Environment & Cache
+# === PYTHON & SISTEM CACHE ===
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
+.venv/
 venv/
-pip-log.txt
-pip-delete-this-directory.txt
-
-# 2. Storage & Media Files (Mencegah file video menyumbat GitHub)
-storage/raw_videos/*
-storage/audio_tracks/*
-storage/output_shorts/*
-
-# Pengecualian: Izinkan file .gitkeep tetap ter-upload agar struktur folder tidak hilang
-!storage/raw_videos/.gitkeep
-!storage/audio_tracks/.gitkeep
-!storage/output_shorts/.gitkeep
-!storage/.gitkeep
-
-# 3. Kredensial & API Keys (SANGAT RAHASIA - Jangan Sampai Bocor!)
-client_secret.json
-config/token.json
-config/settings.json
-*.env
-
-# 4. OS & Editor Trash
+.image/
 .DS_Store
-Thumbs.db
 .vscode/
 .idea/
-*.swp
+
+# === ASSET MEDIA (Penyimpanan Video/Audio Mentah) ===
+storage/raw_videos/*
+storage/output_shorts/*
+storage/audio_tracks/*
+
+# Pengecualian agar folder kosong tetap terdeteksi di GitHub
+!storage/raw_videos/.gitkeep
+!storage/output_shorts/.gitkeep
+!storage/audio_tracks/.gitkeep
