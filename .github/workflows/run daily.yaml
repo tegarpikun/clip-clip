@@ -17,9 +17,9 @@ jobs:
     - name: Checkout repository code
       uses: actions/checkout@v4
 
-    # 2. Menyiapkan lingkungan Python versi 3.10 di server virtual
+    # 2. Menyiapkan lingkungan Python versi 3.10 di server virtual (Sudah diperbaiki)
     - name: Set up Python
-      uses: actions/uses/setup-python@v5
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
