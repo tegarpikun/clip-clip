@@ -12,15 +12,21 @@ def get_target_channels(file_path="config/channels.txt"):
 def download_latest_video(channel_url, output_dir="storage/raw_videos"):
     os.makedirs(output_dir, exist_ok=True)
 
-    # Ambil info 10 video terbaru tanpa download dulu
+    # Paksa ke tab /videos agar tidak masuk Shorts/Live
+    if not channel_url.endswith("/videos"):
+        channel_url = channel_url.rstrip("/") + "/videos"
+
+    print(f"[*] Memeriksa channel: {channel_url}")
+
+    # Ambil info 10 video terbaru dengan durasi lengkap
     ydl_opts_info = {
         'playlistend': 10,
         'quiet': True,
         'ignoreerrors': True,
-        'extract_flat': True,
+        'extract_flat': False,
+        'skip_download': True,
     }
 
-    print(f"[*] Memeriksa channel: {channel_url}")
     with yt_dlp.YoutubeDL(ydl_opts_info) as ydl:
         try:
             info = ydl.extract_info(channel_url, download=False)
@@ -38,7 +44,6 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         if not entry:
             continue
         duration = entry.get('duration') or 0
-        video_id = entry.get('id')
         title = entry.get('title', 'Unknown')
         print(f"    - '{title}' | durasi: {duration}s")
         if duration > 300:
