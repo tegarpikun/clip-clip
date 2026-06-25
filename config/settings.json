@@ -1,0 +1,17 @@
+{
+  "search_settings": {
+    "keywords": ["trending", "podcast", "funny"],
+    "max_video_length_minutes": 10,
+    "language": "id"
+  },
+  "clipper_settings": {
+    "target_duration_seconds": 60,
+    "aspect_ratio": "9:16",
+    "output_format": "mp4"
+  },
+  "uploader_settings": {
+    "privacy_status": "private",
+    "made_for_kids": false,
+    "daily_upload_limit": 4
+  }
+}
