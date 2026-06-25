@@ -1,0 +1,14 @@
+# Credentials - JANGAN PERNAH COMMIT INI!
+client_secret.json
+config/token.json
+
+# Storage files
+storage/raw_videos/*.mp4
+storage/output_shorts/*.mp4
+storage/audio_tracks/*.wav
+
+# Python
+__pycache__/
+*.py[cod]
+.env
+venv/
