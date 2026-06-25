@@ -72,12 +72,26 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'quiet': False,
     }
 
-    print(f"[*] Mendownload: {video_url}")
+   print(f"[*] Mendownload: {video_url}")
     with yt_dlp.YoutubeDL(ydl_dl_opts) as ydl:
         try:
-            ydl.download([video_url])
-            print(f"[+] Sukses mendownload: {output_path}")
-            return output_path
+            dl_info = ydl.extract_info(video_url, download=True)
+            if dl_info:
+                real_id = dl_info.get('id', video_id)
+                file_path = os.path.join(output_dir, f"{real_id}.mp4")
+                if os.path.exists(file_path):
+                    print(f"[+] Sukses mendownload: {file_path}")
+                    return file_path
+                    
+            files = sorted(
+                [os.path.join(output_dir, f) for f in os.listdir(output_dir) if f.endswith('.mp4')],
+                key=os.path.getmtime, reverse=True
+            )
+            if files:
+                print(f"[+] Sukses mendownload: {files[0]}")
+                return files[0]
+            print("[-] File tidak ditemukan setelah download.")
+            return None
         except Exception as e:
             print(f"[!] Gagal mendownload: {e}")
             return None
