@@ -20,7 +20,7 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
     os.makedirs(output_dir, exist_ok=True)
     
     # Set batas waktu 24 jam yang lalu (format UTC untuk YouTube)
-    yesterday = (datetime.utcnow() - timedelta(days=1)).strftime('%Y%m%d')
+    yesterday = (datetime.utcnow() - timedelta(days=7)).strftime('%Y%m%d')
     
     ydl_opts = {
         # Ambil 1 video paling baru dari feed/playlist channel
