@@ -12,64 +12,72 @@ def get_target_channels(file_path="config/channels.txt"):
 def download_latest_video(channel_url, output_dir="storage/raw_videos"):
     os.makedirs(output_dir, exist_ok=True)
 
-    # Paksa ke tab /videos agar tidak masuk Shorts/Live
-    if not channel_url.endswith("/videos"):
-        channel_url = channel_url.rstrip("/") + "/videos"
+    base_url = channel_url.rstrip("/")
+    if not base_url.endswith("/videos"):
+        base_url = base_url + "/videos"
 
-    print(f"[*] Memeriksa channel: {channel_url}")
+    print(f"[*] Memeriksa channel: {base_url}")
 
-    # Ambil info 10 video terbaru dengan durasi lengkap
-    ydl_opts_info = {
-        'playlistend': 10,
+    ydl_info_opts = {
         'quiet': True,
         'ignoreerrors': True,
-        'extract_flat': False,
-        'skip_download': True,
+        'extract_flat': 'in_playlist',
+        'playlistend': 15,
     }
 
-    with yt_dlp.YoutubeDL(ydl_opts_info) as ydl:
+    video_id = None
+    with yt_dlp.YoutubeDL(ydl_info_opts) as ydl:
         try:
-            info = ydl.extract_info(channel_url, download=False)
+            info = ydl.extract_info(base_url, download=False)
+            if not info or 'entries' not in info:
+                print("[-] Tidak bisa membaca daftar video.")
+                return None
+
+            for entry in info['entries']:
+                if not entry:
+                    continue
+                duration = entry.get('duration') or 0
+                vid_id = entry.get('id')
+                title = entry.get('title', 'Unknown')
+                print(f"    - '{title}' | durasi: {duration}s")
+                if duration > 300:
+                    video_id = vid_id
+                    print(f"[+] Memilih: '{title}' ({duration}s)")
+                    break
+                elif duration == 0 and vid_id:
+                    try:
+                        detail = ydl.extract_info(f"https://www.youtube.com/watch?v={vid_id}", download=False)
+                        real_duration = detail.get('duration') or 0
+                        print(f"      -> cek detail: {real_duration}s")
+                        if real_duration > 300:
+                            video_id = vid_id
+                            print(f"[+] Memilih: '{title}' ({real_duration}s)")
+                            break
+                    except:
+                        continue
         except Exception as e:
             print(f"[!] Gagal mengakses channel: {e}")
             return None
 
-    if not info or 'entries' not in info:
-        print("[-] Tidak bisa membaca daftar video channel.")
+    if not video_id:
+        print("[-] Tidak ada video > 5 menit yang ditemukan.")
         return None
 
-    # Cari video pertama yang durasinya > 5 menit
-    target_video = None
-    for entry in info['entries']:
-        if not entry:
-            continue
-        duration = entry.get('duration') or 0
-        title = entry.get('title', 'Unknown')
-        print(f"    - '{title}' | durasi: {duration}s")
-        if duration > 300:
-            target_video = entry
-            print(f"[+] Video lolos filter: '{title}' ({duration}s)")
-            break
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
+    output_path = os.path.join(output_dir, f"{video_id}.mp4")
 
-    if not target_video:
-        print("[-] Tidak ada video > 5 menit di 10 video terbaru.")
-        return None
-
-    # Download video yang dipilih
-    video_url = f"https://www.youtube.com/watch?v={target_video['id']}"
-    ydl_opts_dl = {
+    ydl_dl_opts = {
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'quiet': False,
     }
 
     print(f"[*] Mendownload: {video_url}")
-    with yt_dlp.YoutubeDL(ydl_opts_dl) as ydl:
+    with yt_dlp.YoutubeDL(ydl_dl_opts) as ydl:
         try:
             ydl.download([video_url])
-            file_path = os.path.join(output_dir, f"{target_video['id']}.mp4")
-            print(f"[+] Sukses mendownload: {file_path}")
-            return file_path
+            print(f"[+] Sukses mendownload: {output_path}")
+            return output_path
         except Exception as e:
-            print(f"[!] Gagal mendownload video: {e}")
+            print(f"[!] Gagal mendownload: {e}")
             return None
