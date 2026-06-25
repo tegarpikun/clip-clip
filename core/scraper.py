@@ -32,7 +32,6 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
             if not info or 'entries' not in info:
                 print("[-] Tidak bisa membaca daftar video.")
                 return None
-
             for entry in info['entries']:
                 if not entry:
                     continue
@@ -64,7 +63,6 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         return None
 
     video_url = f"https://www.youtube.com/watch?v={video_id}"
-    output_path = os.path.join(output_dir, f"{video_id}.mp4")
 
     ydl_dl_opts = {
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
@@ -72,7 +70,7 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'quiet': False,
     }
 
-   print(f"[*] Mendownload: {video_url}")
+    print(f"[*] Mendownload: {video_url}")
     with yt_dlp.YoutubeDL(ydl_dl_opts) as ydl:
         try:
             dl_info = ydl.extract_info(video_url, download=True)
@@ -82,7 +80,6 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
                 if os.path.exists(file_path):
                     print(f"[+] Sukses mendownload: {file_path}")
                     return file_path
-                    
             files = sorted(
                 [os.path.join(output_dir, f) for f in os.listdir(output_dir) if f.endswith('.mp4')],
                 key=os.path.getmtime, reverse=True
