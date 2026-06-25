@@ -1,7 +1,7 @@
 google-genai
 yt-dlp
 openai-whisper
-moviepy
+moviepy==1.0.3
 opencv-python-headless
 google-auth
 google-auth-oauthlib
