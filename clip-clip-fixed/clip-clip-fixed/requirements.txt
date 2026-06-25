@@ -1,0 +1,9 @@
+google-genai
+yt-dlp
+openai-whisper
+moviepy
+opencv-python-headless
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
