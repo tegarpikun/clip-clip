@@ -1,6 +1,5 @@
 import os
 import yt_dlp
-from datetime import datetime, timedelta
 
 def get_target_channels(file_path="config/channels.txt"):
     """Membaca daftar URL channel dari file konfigurasi."""
@@ -20,18 +19,11 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
     os.makedirs(output_dir, exist_ok=True)
     
     # Set batas waktu 24 jam yang lalu (format UTC untuk YouTube)
-    yesterday = (datetime.utcnow() - timedelta(days=7)).strftime('%Y%m%d')
-    
-    ydl_opts = {
-        # Ambil 1 video paling baru dari feed/playlist channel
-        'playlistend': 1, 
-        
-        # Filter: Hanya video berdurasi lebih dari 10 menit (600 detik) 
-        # DAN diupload setelah/pada hari kemarin
-        'match_filter': lambda info, *, incomplete: None if (
-            info.get('duration', 0) > 600 and 
-            info.get('upload_date', '00000000') >= yesterday
-        ) else 'Video tidak memenuhi kriteria (terlalu pendek atau video lama)',
+   ydl_opts = {
+    'playlistend': 1,
+    'match_filter': lambda info, *, incomplete: None if (
+        info.get('duration', 0) > 600
+    ) else 'Video tidak memenuhi kriteria (terlalu pendek)',
         
         # Format video terbaik dalam kontainer MP4 agar stabil di MoviePy
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
