@@ -1,6 +1,6 @@
 import os
 import whisper
-from moviepy.editor import VideoFileClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
 
 def extract_and_transcribe(video_path, audio_dir="storage/audio_tracks"):
     """Mengekstrak audio dari MP4 lalu mentranskripnya menggunakan OpenAI Whisper."""
