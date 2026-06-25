@@ -6,36 +6,25 @@ def get_target_channels(file_path="config/channels.txt"):
     if not os.path.exists(file_path):
         print(f"[!] File {file_path} tidak ditemukan. Buat file terlebih dahulu.")
         return []
-    
     with open(file_path, "r") as f:
         channels = [line.strip() for line in f.readlines() if line.strip() and not line.startswith("#")]
     return channels
 
 def download_latest_video(channel_url, output_dir="storage/raw_videos"):
-    """
-    Memeriksa dan mendownload 1 video terbaru dari channel jika durasinya > 10 menit
-    dan diunggah dalam 24 jam terakhir.
-    """
+    """Mendownload 1 video terbaru dari channel jika durasinya > 10 menit."""
     os.makedirs(output_dir, exist_ok=True)
-    
-    # Set batas waktu 24 jam yang lalu (format UTC untuk YouTube)
-   ydl_opts = {
-    'playlistend': 1,
-    'match_filter': lambda info, *, incomplete: None if (
-        info.get('duration', 0) > 600
-    ) else 'Video tidak memenuhi kriteria (terlalu pendek)',
-        
-        # Format video terbaik dalam kontainer MP4 agar stabil di MoviePy
+
+    ydl_opts = {
+        'playlistend': 1,
+        'match_filter': lambda info, *, incomplete: None if (
+            info.get('duration', 0) > 600
+        ) else 'Video tidak memenuhi kriteria (terlalu pendek)',
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
-        
-        # Lokasi penamaan file output (menggunakan ID video agar unik)
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
-        
-        # Mengabaikan error jika ada video shorts atau live yang sedang berjalan
         'ignoreerrors': True,
         'quiet': False
     }
-    
+
     print(f"[*] Memeriksa channel: {channel_url}")
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
@@ -51,10 +40,3 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         except Exception as e:
             print(f"[!] Gagal memproses channel {channel_url}: {e}")
             return None
-
-if __name__ == "__main__":
-    # Test Jalur Mandiri (Bisa dijalankan langsung untuk testing)
-    print("[*] Menjalankan test Scraper Modul...")
-    target_channels = get_target_channels()
-    for channel in target_channels:
-        download_latest_video(channel)
