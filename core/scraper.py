@@ -17,7 +17,7 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
     ydl_opts = {
         'playlistend': 1,
         'match_filter': lambda info, *, incomplete: None if (
-            info.get('duration', 0) > 600
+            info.get('duration', 0) > 300
         ) else 'Video tidak memenuhi kriteria (terlalu pendek)',
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
