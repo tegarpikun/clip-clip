@@ -69,6 +69,7 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'quiet': False,
+        'cookiefile': 'cookies.txt',
     }
 
     print(f"[*] Mendownload: {video_url}")
