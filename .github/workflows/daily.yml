@@ -29,11 +29,8 @@ jobs:
         pip install -U yt-dlp
         pip install -r requirements.txt
         yt-dlp --version
-
-    - name: Install yt-dlp JS runtime (EJS)
-      run: |
-        npm install -g @yt-dlp/ejs-runner
-        yt-dlp --js-runtimes node --version || true
+        which node
+        node --version
 
     - name: Recreate client_secret.json dari Secrets
       env:
