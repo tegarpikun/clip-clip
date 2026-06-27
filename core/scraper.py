@@ -24,8 +24,6 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'extract_flat': 'in_playlist',
         'playlistend': 15,
         'cookiefile': 'cookies.txt',
-        'extractor_args': {'youtube': {'player_client': ['web']}},
-        'js_runtimes': ['node'],
     }
 
     video_id = None
@@ -35,6 +33,7 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
             if not info or 'entries' not in info:
                 print("[-] Tidak bisa membaca daftar video.")
                 return None
+
             for entry in info['entries']:
                 if not entry:
                     continue
@@ -48,7 +47,10 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
                     break
                 elif duration == 0 and vid_id:
                     try:
-                        detail = ydl.extract_info(f"https://www.youtube.com/watch?v={vid_id}", download=False)
+                        detail = ydl.extract_info(
+                            f"https://www.youtube.com/watch?v={vid_id}",
+                            download=False
+                        )
                         real_duration = detail.get('duration') or 0
                         print(f"      -> cek detail: {real_duration}s")
                         if real_duration > 300:
@@ -72,8 +74,6 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'quiet': False,
         'cookiefile': 'cookies.txt',
-        'extractor_args': {'youtube': {'player_client': ['web']}},
-        'js_runtimes': ['node'],
     }
 
     print(f"[*] Mendownload: {video_url}")
@@ -86,6 +86,7 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
                 if os.path.exists(file_path):
                     print(f"[+] Sukses mendownload: {file_path}")
                     return file_path
+            # Fallback: cari file mp4 terbaru di folder
             files = sorted(
                 [os.path.join(output_dir, f) for f in os.listdir(output_dir) if f.endswith('.mp4')],
                 key=os.path.getmtime, reverse=True
