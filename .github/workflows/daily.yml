@@ -17,20 +17,23 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-        
-    - name: Install Node.js untuk yt-dlp n-challenge solver
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        
-    - name: Install system dependencies (ffmpeg for moviepy)
-      run: sudo apt-get install -y ffmpeg
 
-    - name: Install Python dependencies
+    - name: Install system dependencies
       run: |
-        python -m pip install --upgrade pip
+        sudo apt-get install -y ffmpeg nodejs npm
+        node --version
+        npm --version
+
+    - name: Install yt-dlp dengan Node.js support
+      run: |
+        pip install -U yt-dlp
         pip install -r requirements.txt
-    
+        yt-dlp --version
+
+    - name: Install yt-dlp JS runtime (EJS)
+      run: |
+        npm install -g @yt-dlp/ejs-runner
+        yt-dlp --js-runtimes node --version || true
 
     - name: Recreate client_secret.json dari Secrets
       env:
@@ -47,10 +50,11 @@ jobs:
 
     - name: Recreate YouTube cookies
       env:
-            COOKIES_DATA: ${{ secrets.YOUTUBE_COOKIES }}
+        COOKIES_DATA: ${{ secrets.YOUTUBE_COOKIES }}
       run: |
         echo "$COOKIES_DATA" > cookies.txt
-        
+        echo "[*] Cookies file size: $(wc -c < cookies.txt) bytes"
+
     - name: Run main pipeline
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
