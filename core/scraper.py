@@ -68,13 +68,18 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         return None
 
     video_url = f"https://www.youtube.com/watch?v={video_id}"
-
+    
     ydl_dl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
+        'format': 'best[ext=mp4]/best',
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'quiet': False,
         'cookiefile': 'cookies.txt',
-    }
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['ios', 'web'],
+                }
+            },
+        }
 
     print(f"[*] Mendownload: {video_url}")
     with yt_dlp.YoutubeDL(ydl_dl_opts) as ydl:
