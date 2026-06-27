@@ -23,6 +23,7 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'ignoreerrors': True,
         'extract_flat': 'in_playlist',
         'playlistend': 15,
+        'cookiefile': 'cookies.txt',
     }
 
     video_id = None
