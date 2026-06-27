@@ -39,6 +39,12 @@ jobs:
         mkdir -p config
         echo "$TOKEN_DATA" > config/token.json
 
+    - name: Recreate YouTube cookies
+      env:
+            COOKIES_DATA: ${{ secrets.YOUTUBE_COOKIES }}
+      run: |
+        echo "$COOKIES_DATA" > cookies.txt
+        
     - name: Run main pipeline
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
