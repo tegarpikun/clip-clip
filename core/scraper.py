@@ -24,6 +24,8 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'extract_flat': 'in_playlist',
         'playlistend': 15,
         'cookiefile': 'cookies.txt',
+        'extractor_args': {'youtube': {'player_client': ['web']}},
+        'js_runtimes': ['node'],
     }
 
     video_id = None
@@ -70,6 +72,8 @@ def download_latest_video(channel_url, output_dir="storage/raw_videos"):
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'quiet': False,
         'cookiefile': 'cookies.txt',
+        'extractor_args': {'youtube': {'player_client': ['web']}},
+        'js_runtimes': ['node'],
     }
 
     print(f"[*] Mendownload: {video_url}")
